@@ -86,7 +86,7 @@ export const bookService = async (req, res) => {
       await ServiceProvider.findByIdAndUpdate(serviceProvider[0]._id, { ...serviceProvider[0] });
       await Customer.findByIdAndUpdate(customer._id, { ...customer });
       console.log("Booked");
-      res.status(200).json({ message: "Booked", bookedServiceId: serviceProviderId, date: date });
+      res.status(200).json({ message: "Booked", bookedServiceId: serviceProvider.id, date: date });
     }
     else {
       console.log("Not Available");

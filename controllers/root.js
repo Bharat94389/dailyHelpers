@@ -6,7 +6,6 @@ export const authenticateUser = async (req, res) => {
     username: req.body.username,
     password: req.body.password
   }
-
   let customerData = await Customer.find({credential: credentials});
 
   if(customerData.length!=0) {
