@@ -78,14 +78,15 @@ export const bookService = async (req, res) => {
 
     if(serviceProvider[0].status === 'available' && customer.currentService.service === '') {
       serviceProvider[0].status = "busy";
-      customer.currentService = {
+      let date = new Date();
+      customer.currentService.push({
         service: serviceProviderId,
-        date: new Date()
-      };
+        date: date
+      });
       await ServiceProvider.findByIdAndUpdate(serviceProvider[0]._id, { ...serviceProvider[0] });
       await Customer.findByIdAndUpdate(customer._id, { ...customer });
       console.log("Booked");
-      res.status(200).json({ message: "Booked" });
+      res.status(200).json({ message: "Booked", bookedServiceId: serviceProviderId, date: date });
     }
     else {
       console.log("Not Available");
@@ -99,19 +100,25 @@ export const bookService = async (req, res) => {
 }
 
 export const removeCurrentService = async (req, res) => {
-  const id = req.params.id;
+  const customerId = req.params.cid, serviceProviderId = req.params.sid;
   try {
-    const customer = await Customer.findById(id);
-    const serviceProvider = await ServiceProvider.findById(customer.currentService.service);
+    const customer = await Customer.findById(customerId);
+    const serviceProvider = await ServiceProvider.findById(serviceProviderId);
     serviceProvider.status = "available";
-    let days = Math.ceil(Math.abs((new Date()) - customer.currentService.date) / (1000 * 60 * 60 * 24));
+    let i = 0;
+    for(; i<currentService.length; i++) {
+      if(currentService[i].service === serviceProviderId)
+        break;
+    }
+    let days = Math.ceil(Math.abs((new Date()) - customer.currentService[i].date) / (1000 * 60 * 60 * 24));
     customer.charge = customer.charge + days * serviceProvider.charge;
     customer.history.push({
-      service: customer.currentService.service,
+      service: customer.currentService[i].service,
       days: days,
       charge: days * serviceProvider.charge
     })
-    customer.currentService = { service: '', date: new Date()};
+    customer.currentService.pop(i);
+    
     await ServiceProvider.findByIdAndUpdate(serviceProvider._id, { ...serviceProvider });
     await Customer.findByIdAndUpdate(customer._id, { ...customer });
     res.status(200).json({ message: "Done !!" });

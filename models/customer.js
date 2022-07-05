@@ -15,8 +15,11 @@ const customerSchema = mongoose.Schema({
   email: def,
   profileImg: String,
   currentService: {
-    service: {type: String, default: ""},
-    date: {type: Date, default: new Date()}
+    type: [{
+      service: {type: String, default: ""},
+      date: {type: Date, default: new Date()}
+    }],
+    default: []
   },
   history: {type: [{ serviceProviderId: String, days: Number, charge: Number }], default: []}
 });

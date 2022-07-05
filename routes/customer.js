@@ -14,9 +14,9 @@ const customerRouter = express.Router();
 customerRouter.get('/', getCustomerData);
 customerRouter.post('/', addCustomer);
 customerRouter.get('/:id', getCustomerDataWithId);
-customerRouter.post('/:id', removeCurrentService);
 customerRouter.delete('/:id', deleteCustomer);
 customerRouter.put('/:id', updateCustomerDetails);
 customerRouter.get('/:cid/:sid', bookService);
+customerRouter.post('/:cid/:sid', removeCurrentService);
 
 export default customerRouter;
