@@ -56,7 +56,7 @@ export const deleteServiceProvider = async (req, res) => {
   try {
     await ServiceProvider.findByIdAndDelete(id);
     console.log("Service Provider deleted Successfully !!");
-    res.send(200).json({ message: "Service Provider deleted Successfully !!" });
+    res.status(200).json({ message: "Service Provider deleted Successfully !!" });
   }
   catch (err) {
     console.log(err.message);
@@ -70,10 +70,10 @@ export const getHistory = async (req, res) => {
   try {
     for(let i=0; i<data.length; i++) {
       let service = await ServiceProvider.findById(data[i].service);
-      details.push({ ...service, date: data[i].date });
+      let customer = await Customer.findById(service.customerId);
+      details.push({ name: customer.name, date: data[i].date, service: service.service });
     }
-    console.log(details);
-    res.send(200).json(details);
+    res.status(200).json(details);
   }
   catch (err) {
     console.log(err.message);
