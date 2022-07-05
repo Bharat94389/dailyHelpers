@@ -76,7 +76,7 @@ export const bookService = async (req, res) => {
     console.log(serviceProvider[0]);
     console.log(customer);
 
-    if(serviceProvider[0].status === 'available' && customer.currentService.service === '') {
+    if(serviceProvider[0].status === 'available') {
       serviceProvider[0].status = "busy";
       let date = new Date();
       customer.currentService.push({
