@@ -78,7 +78,10 @@ export const bookService = async (req, res) => {
 
     if(serviceProvider[0].status === 'available' && customer.currentService.service === '') {
       serviceProvider[0].status = "busy";
-      customer.currentService.service = serviceProviderId;
+      customer.currentService = {
+        service: serviceProviderId,
+        date: new Date()
+      };
       await ServiceProvider.findByIdAndUpdate(serviceProvider[0]._id, { ...serviceProvider[0] });
       await Customer.findByIdAndUpdate(customer._id, { ...customer });
       console.log("Booked");
@@ -99,13 +102,13 @@ export const removeCurrentService = async (req, res) => {
   const id = req.params.id;
   try {
     const customer = await Customer.findById(id);
-    const serviceProvider = await ServiceProvider.findById(customer.id);
+    const serviceProvider = await ServiceProvider.findById(customer.currentService.service);
     serviceProvider.status = "available";
     let days = Math.ceil(Math.abs((new Date()) - customer.currentService.date) / (1000 * 60 * 60 * 24));
     customer.charge = customer.charge + days * serviceProvider.charge;
-    customer.currentService.service = "";
-    await serviceProvider.save();
-    await customer.save();
+    customer.currentService = { service: '', date: new Date()};
+    await ServiceProvider.findByIdAndUpdate(serviceProvider._id, { ...serviceProvider });
+    await Customer.findByIdAndUpdate(customer._id, { ...customer });
     res.status(200).json({ message: "Done !!" });
   }
   catch (err) {
