@@ -106,6 +106,11 @@ export const removeCurrentService = async (req, res) => {
     serviceProvider.status = "available";
     let days = Math.ceil(Math.abs((new Date()) - customer.currentService.date) / (1000 * 60 * 60 * 24));
     customer.charge = customer.charge + days * serviceProvider.charge;
+    customer.history.push({
+      service: customer.currentService.service,
+      days: days,
+      charge: days * serviceProvider.charge
+    })
     customer.currentService = { service: '', date: new Date()};
     await ServiceProvider.findByIdAndUpdate(serviceProvider._id, { ...serviceProvider });
     await Customer.findByIdAndUpdate(customer._id, { ...customer });
