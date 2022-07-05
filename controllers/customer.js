@@ -80,7 +80,7 @@ export const bookService = async (req, res) => {
       serviceProvider[0].status = "busy";
       let date = new Date();
       customer.currentService.push({
-        service: serviceProviderId,
+        service: serviceProvider.id,
         date: date
       });
       await ServiceProvider.findByIdAndUpdate(serviceProvider[0]._id, { ...serviceProvider[0] });

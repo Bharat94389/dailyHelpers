@@ -63,3 +63,20 @@ export const deleteServiceProvider = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 }
+
+export const getHistory = async (req, res) => {
+  const data = req.body.data;
+  let details = [];
+  try {
+    for(let i=0; i<data.length; i++) {
+      let service = await ServiceProvider.findById(data[i].service);
+      details.push({ ...service, date: data[i].date });
+    }
+    console.log(details);
+    res.send(200).json(details);
+  }
+  catch (err) {
+    console.log(err.message);
+    res.status(404).json({ message: err.message });
+  }
+}
